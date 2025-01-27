@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class GetSpecificTodoDto {
+export class SpecificTaskDto {
   @IsString()
   id: string;
 }

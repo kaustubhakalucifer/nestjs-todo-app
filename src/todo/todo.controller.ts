@@ -11,7 +11,8 @@ import {
 
 import { TodoService } from './todo.service';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { GetSpecificTodoDto } from './dto/get-specific-todo.dto';
+import { SpecificTaskDto } from './dto/get-specific-todo.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Controller('todo')
 export class TodoController {
@@ -23,7 +24,7 @@ export class TodoController {
   }
 
   @Get('/:id')
-  getSpecificTodo(@Param() todoId: GetSpecificTodoDto) {
+  getSpecificTodo(@Param() todoId: SpecificTaskDto) {
     return this.todoService.getSpecificTask(todoId);
   }
 
@@ -38,8 +39,12 @@ export class TodoController {
   }
 
   @Put('/:id')
-  updateSpecificTask() {}
+  updateSpecificTask(@Param() updateTodoId: SpecificTaskDto, @Body() updatedDetails: UpdateTaskDto) {
+    return this.todoService.updateSpecificTask(updateTodoId, updatedDetails);
+  }
 
   @Delete('/:id')
-  deleteSpecificTask() {}
+  deleteSpecificTask(@Param() todoId: SpecificTaskDto) {
+    return this.todoService.deleteSpecificTask(todoId);
+  }
 }
