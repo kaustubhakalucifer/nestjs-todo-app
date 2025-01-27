@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Post,
   Put,
@@ -11,7 +10,6 @@ import {
 
 import { TodoService } from './todo.service';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { SpecificTaskDto } from './dto/get-specific-todo.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Controller('todo')
@@ -20,31 +18,31 @@ export class TodoController {
 
   @Get('')
   listTodo() {
-    return this.todoService.getAllList();
+    return this.todoService.getTasks();
   }
 
   @Get('/:id')
-  getSpecificTodo(@Param() todoId: SpecificTaskDto) {
-    return this.todoService.getSpecificTask(todoId);
+  getSpecificTodo(@Param('id') id: number) {
+    return this.todoService.getTaskById(id);
   }
 
   @Post('')
   createNewTask(@Body() createTaskDto: CreateTaskDto) {
-    this.todoService.createTask(createTaskDto);
-    return {
-      message: 'Todo added successfully',
-      status: true,
-      statusCode: HttpStatus.CREATED,
-    };
+    const { title, description } = createTaskDto;
+    return this.todoService.createTask(title, description);
   }
 
   @Put('/:id')
-  updateSpecificTask(@Param() updateTodoId: SpecificTaskDto, @Body() updatedDetails: UpdateTaskDto) {
-    return this.todoService.updateSpecificTask(updateTodoId, updatedDetails);
+  updateSpecificTask(
+    @Param('id') id: number,
+    @Body() updatedDetails: UpdateTaskDto,
+  ) {
+    const { title, description } = updatedDetails;
+    return this.todoService.updateTask(id, title, description);
   }
 
   @Delete('/:id')
-  deleteSpecificTask(@Param() todoId: SpecificTaskDto) {
-    return this.todoService.deleteSpecificTask(todoId);
+  deleteSpecificTask(@Param('id') id: number) {
+    return this.todoService.deleteTask(id);
   }
 }
