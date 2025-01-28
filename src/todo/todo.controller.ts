@@ -21,7 +21,7 @@ export class TodoController {
     return this.todoService.getTasks();
   }
 
-  @Get('/:id')
+  @Get(':id')
   getSpecificTodo(@Param('id') id: number) {
     return this.todoService.getTaskById(id);
   }
@@ -32,13 +32,12 @@ export class TodoController {
     return this.todoService.createTask(title, description);
   }
 
-  @Put('/:id')
+  @Put(':id')
   updateSpecificTask(
     @Param('id') id: number,
     @Body() updatedDetails: UpdateTaskDto,
   ) {
-    const { title, description } = updatedDetails;
-    return this.todoService.updateTask(id, title, description);
+    return this.todoService.updateTask(id, updatedDetails);
   }
 
   @Delete('/:id')

@@ -2,6 +2,7 @@ import { TaskRepository } from './task.repository';
 import { ITodoService } from './todo-service.interface';
 import { Inject, Injectable } from '@nestjs/common';
 import { Task } from './entities/task.entity';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Injectable()
 export class TodoService implements ITodoService {
@@ -11,8 +12,8 @@ export class TodoService implements ITodoService {
 
   private idCounter = 1;
 
-  async updateTask(id: number, title: string, description?: string) {
-    await this.taskRepository.update(id, { title, description });
+  async updateTask(id: number, updateTaskDto: UpdateTaskDto) {
+    await this.taskRepository.update(id, updateTaskDto);
     return this.taskRepository.findById(id);
   }
 
