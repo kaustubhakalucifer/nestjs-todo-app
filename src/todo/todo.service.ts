@@ -1,44 +1,35 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-
+import { TaskRepository } from './task.repository';
 import { ITodoService } from './todo-service.interface';
+import { Inject, Injectable } from '@nestjs/common';
 import { Task } from './entities/task.entity';
 
 @Injectable()
 export class TodoService implements ITodoService {
-  private tasks: Task[] = [];
+  constructor(
+    @Inject('TaskRepository') private taskRepository: TaskRepository,
+  ) {}
+
   private idCounter = 1;
 
-  updateTask(id: number, title: string, description?: string) {
-    const task = this.getTaskById(id);
-    if (!task) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
-    }
-    task.title = title;
-    task.description = description;
-    return task;
+  async updateTask(id: number, title: string, description?: string) {
+    await this.taskRepository.update(id, { title, description });
+    return this.taskRepository.findById(id);
   }
 
   createTask(title: string, description?: string) {
-    const task = new Task(this.idCounter++, title, description, false);
-    this.tasks.push(task);
-    return task;
+    const newTask: Partial<Task> = { title, description, id: this.idCounter++ };
+    return this.taskRepository.create(newTask);
   }
 
-  getTasks(): Task[] {
-    return this.tasks;
+  getTasks(): Promise<Task[]> {
+    return this.taskRepository.findAll();
   }
 
   getTaskById(id: number) {
-    return this.tasks.find(
-      (object) => object.id === Number.parseInt(id.toString()),
-    );
+    return this.taskRepository.findById(id);
   }
 
   deleteTask(id: number) {
-    const index = this.tasks.findIndex((object) => object.id === id);
-    if (index !== -1) {
-      this.tasks.splice(index, 1);
-    }
-    throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    return this.taskRepository.delete(id);
   }
 }
